@@ -4,27 +4,31 @@ import Author from './Author';
 import Twitter from './Twitter';
 import Tumblr from './Tumblr';
 import NewQuote from './NewQuote';
-import QuoteData from './quotes.json';
+import { random } from 'lodash';
 import './App.css';
+
 
 class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      messages: QuoteData,
+      messages: [],
       output: {}
     };
     this.handleClick = this.handleClick.bind(this);
   }
+  
   componentDidMount () {
-    this.handleClick();
+    fetch('https://gist.githubusercontent.com/shreyasminocha/7d5dedafc1fe158f82563c1223855177/raw/325d51aca7165b2498971afcff9bed286a52dc0e/quotes.json')
+    .then(data => data.json())
+    .then(data => this.setState( ()=>
+     ({messages: data,
+      output: data[random(0,data.length-1)]})));
   };
 
   handleClick () {
-    const random = Math.floor(Math.random()*(this.state.messages.length-1));
-    this.setState ( () => ({
-      output: this.state.messages[random],
-      messages: this.state.messages.filter((elem) => elem !== this.state.messages[random])
+        this.setState ( () => ({
+      output: this.state.messages[random(0,this.state.messages.length-1)],
     }))
   };
 
